@@ -11,7 +11,7 @@ docker run -d \
     -e AUTOHEAL_CONTAINER_LABEL=all \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v /etc/localtime:/etc/localtime:ro \
-    sushibox/docker-autoheal
+    docker.io/sushibox/docker-autoheal:latest
 ```
 ### TCP socket
 ```bash
@@ -21,7 +21,7 @@ docker run -d \
     -e AUTOHEAL_CONTAINER_LABEL=all \
     -e DOCKER_SOCK=tcp://HOST:PORT \
     -v /etc/localtime:/etc/localtime:ro \
-    sushibox/docker-autoheal
+    docker.io/sushibox/docker-autoheal:latest
 ```
 
 ### Options
