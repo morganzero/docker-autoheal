@@ -1,4 +1,7 @@
-FROM alpine:3.13.5
+FROM alpine:3.17.2
+
+LABEL maintainer="Morgan Zero"
+LABEL description="Monitor and restart unhealthy docker containers"
 
 RUN apk add --no-cache curl jq
 
@@ -13,5 +16,7 @@ ENV AUTOHEAL_CONTAINER_LABEL=autoheal \
     CURL_TIMEOUT=30
 
 HEALTHCHECK --interval=5s CMD pgrep -f autoheal || exit 1
+
+USER 1000
 
 CMD ["autoheal"]

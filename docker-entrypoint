@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 set -e
 # shellcheck disable=2039
@@ -40,7 +40,7 @@ get_container_info() {
   local url
 
   # Set container selector
-  if [ "$AUTOHEAL_CONTAINER_LABEL" = "all" ]
+  if [[ "$AUTOHEAL_CONTAINER_LABEL" = "all" ]]
   then
     label_filter=""
   else
@@ -66,15 +66,15 @@ term_handler() {
 # shellcheck disable=2039
 trap 'kill $$; term_handler' SIGTERM
 
-if [ "$1" = "autoheal" ]
+if [[ "$1" = "autoheal" ]]
 +then
-  if [ -n "$UNIX_SOCK" ] && ! [ -S "$DOCKER_SOCK" ]
+  if [[ -n "$UNIX_SOCK" ]] && ! [[ -S "$DOCKER_SOCK" ]]
   then
     echo "unix socket is currently not available" >&2
     exit 1
   fi
   # Delayed startup
-  if [ "$AUTOHEAL_START_PERIOD" -gt 0 ]
+  if [[ "$AUTOHEAL_START_PERIOD" -gt 0 ]]
   then
   echo "Monitoring containers for unhealthy status in $AUTOHEAL_START_PERIOD second(s)"
     sleep "$AUTOHEAL_START_PERIOD"
@@ -91,10 +91,10 @@ if [ "$1" = "autoheal" ]
       CONTAINER_SHORT_ID=${CONTAINER_ID:0:12}
       DATE=$(date +%d-%m-%Y" "%H:%M:%S)
 
-      if [ "$CONTAINER_NAME" = "null" ]
+      if [[ "$CONTAINER_NAME" = "null" ]]
       then
         echo "$DATE Container name of (${CONTAINER_SHORT_ID}) is null, which implies container does not exist - don't restart" >&2
-      elif [ "$CONTAINER_STATE" = "restarting" ]
+      elif [[ "$CONTAINER_STATE" = "restarting" ]]
       then
         echo "$DATE Container $CONTAINER_NAME (${CONTAINER_SHORT_ID}) found to be restarting - don't restart"
       else
