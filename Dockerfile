@@ -17,6 +17,4 @@ ENV AUTOHEAL_CONTAINER_LABEL=autoheal \
 
 HEALTHCHECK --interval=5s CMD pgrep -f autoheal || exit 1
 
-USER 1000
-
 CMD ["autoheal"]
