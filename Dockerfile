@@ -1,7 +1,7 @@
 FROM alpine:3.17.2
 
-LABEL maintainer="Morgan Zero"
-LABEL description="Monitor and restart unhealthy docker containers"
+LABEL maintainer="morganzero@sushibox.dev"
+LABEL description="Monitor and restart unhealthy Docker containers"
 
 RUN apk add --no-cache curl jq
 
