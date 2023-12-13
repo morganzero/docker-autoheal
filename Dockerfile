@@ -1,11 +1,11 @@
-FROM alpine:3.17.2
+FROM alpine:3.18
 
 LABEL maintainer="morganzero@sushibox.dev"
 LABEL description="Monitor and restart unhealthy Docker containers"
 
 RUN apk add --no-cache curl jq
 
-COPY docker-entrypoint /
+COPY docker-entrypoint /docker-entrypoint
 ENTRYPOINT ["/docker-entrypoint"]
 
 RUN chmod +x /docker-entrypoint && \
