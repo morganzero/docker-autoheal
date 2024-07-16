@@ -18,7 +18,7 @@ case "${DOCKER_SOCK}" in
               UNIX_SOCK="--unix-socket ${DOCKER_SOCK}" ;;
 esac
 
-AUTOHEAL_CONTAINER_LABEL=${AUTOHEAL_CONTAINER_LABEL:-autoheal}
+AUTOHEAL_EXCLUDE_NAMES=${AUTOHEAL_EXCLUDE_NAMES:-}
 AUTOHEAL_START_PERIOD=${AUTOHEAL_START_PERIOD:-0}
 AUTOHEAL_INTERVAL=${AUTOHEAL_INTERVAL:-5}
 AUTOHEAL_DEFAULT_STOP_TIMEOUT=${AUTOHEAL_DEFAULT_STOP_TIMEOUT:-10}
@@ -31,16 +31,21 @@ docker_curl() {
 }
 
 get_container_info() {
-  local label_filter
   local url
-
-  if [[ "$AUTOHEAL_CONTAINER_LABEL" = "all" ]]; then
-    label_filter=""
-  else
-    label_filter=",\"label\":\[\"${AUTOHEAL_CONTAINER_LABEL}=true\"\]"
-  fi
-  url="${HTTP_ENDPOINT}/containers/json?filters=\{\"health\":\[\"unhealthy\"\]${label_filter}\}"
+  url="${HTTP_ENDPOINT}/containers/json?filters=\{\"health\":\[\"unhealthy\"\]\}"
   docker_curl "$url"
+}
+
+is_container_excluded() {
+  local container_name="$1"
+  local excluded_names="${AUTOHEAL_EXCLUDE_NAMES}"
+
+  for name in ${excluded_names//,/ }; do
+    if [[ "$container_name" == "$name" ]]; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 restart_container() {
@@ -79,6 +84,8 @@ if [[ "$1" = "autoheal" ]]; then
         echo "$DATE Container name of (${CONTAINER_SHORT_ID}) is null, which implies container does not exist - don't restart" >&2
       elif [[ "$CONTAINER_STATE" = "restarting" ]]; then
         echo "$DATE Container $CONTAINER_NAME (${CONTAINER_SHORT_ID}) found to be restarting - don't restart"
+      elif is_container_excluded "$CONTAINER_NAME"; then
+        echo "$DATE Container $CONTAINER_NAME (${CONTAINER_SHORT_ID}) is excluded from autoheal - don't restart"
       else
         echo "$DATE Container $CONTAINER_NAME (${CONTAINER_SHORT_ID}) found to be unhealthy - Restarting container now with ${TIMEOUT}s timeout"
         restart_container "$CONTAINER_ID" "$TIMEOUT"
