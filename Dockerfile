@@ -8,8 +8,7 @@ RUN apk add --no-cache bash curl jq
 COPY docker-entrypoint /docker-entrypoint
 ENTRYPOINT ["/docker-entrypoint"]
 
-RUN chmod +x /docker-entrypoint && \
-    export PATH=$PATH:.
+RUN chmod +x /docker-entrypoint
 
 ENV AUTOHEAL_CONTAINER_LABEL=autoheal \
     AUTOHEAL_START_PERIOD=0 \
